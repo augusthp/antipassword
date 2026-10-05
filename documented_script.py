@@ -8,6 +8,10 @@ UNAME = "asdf"
 
 
 def readPsw():
+	#right now the way this works if you have to supply a public key (PW_KEY)
+	#the program will ask you for the public key when you run it
+	#it will ask you for the key 4 times, thats a bug I need to fix
+	#it also isn't very secure because it prints the password in plane text
 	key = os.environ.get("PW_KEY")
 	if not key:
 		key = getpass.getpass("Enter Decryption key: ")
