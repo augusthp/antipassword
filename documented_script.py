@@ -8,21 +8,18 @@ UNAME = "asdf"
 
 
 def readPsw(env):
-	#right now the way this works if you have to supply a public key (PW_KEY)
-	#the program will ask you for the public key when you run it
-	#it will ask you for the key 4 times, thats a bug I need to fix
-	#it also isn't very secure because it prints the password in plane text
-	# key = os.environ.get("PW_KEY")
-	# if not key:
-	# 	key = getpass.getpass("Enter Decryption key: ")
-	# env = os.environ.copy()
-	# env["PW_KEY"] = key
+	#the env variable it takes in stores the key. with the wrong key you can't open
+	#the file
+	"""readPWS decrypts the openssl file so it can be read and compared
+	to the user entered password. This subprocess.run just runs these commands
+	which I think is why this doesn't work on windows"""
 	try:
 		results = subprocess.run(
 			["openssl", "aes-256-cbc", "-d", "-a", "-iter", "10000",
 			"-in", "encpassword.txt", "-pass", "env:PW_KEY" ],
 			capture_output=True, text=True, check=True, env=env
 		)
+	#if this fails it should return an error message instead of just crashing
 	except subprocess.CalledProcessError as e:
 		print("openssl error:", e.stderr)
 		exit(1)
@@ -35,6 +32,10 @@ def prompt2():
 	That makes it easier to check against the 
 	PSWD variable later
 	"""
+	#this try block lets prompt2 take in letters 
+	#since the code says passwords should be numbers only 
+	#this will always return "None" if a user types a letter
+	#meaning the password will be wrong
 	try:
 		return int(input("enter password: ").strip())
 	except ValueError:
@@ -72,6 +73,10 @@ def auth():
 	stored in the variables
 	"""
 
+	#this part looks for the decrpytion key
+	#if none is set then it asks the user for the key
+	#You need to set the decrpytion key when you use openssl
+	#after that you need it each time the program runs.
 	key = os.environ.get("PW_KEY")
 	if not key:
 		key = getpass.getpass("Enter Decryption key: ")
