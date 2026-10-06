@@ -7,16 +7,16 @@ import os
 UNAME = "asdf"
 
 
-def readPsw():
+def readPsw(env):
 	#right now the way this works if you have to supply a public key (PW_KEY)
 	#the program will ask you for the public key when you run it
 	#it will ask you for the key 4 times, thats a bug I need to fix
 	#it also isn't very secure because it prints the password in plane text
-	key = os.environ.get("PW_KEY")
-	if not key:
-		key = getpass.getpass("Enter Decryption key: ")
-	env = os.environ.copy()
-	env["PW_KEY"] = key
+	# key = os.environ.get("PW_KEY")
+	# if not key:
+	# 	key = getpass.getpass("Enter Decryption key: ")
+	# env = os.environ.copy()
+	# env["PW_KEY"] = key
 	try:
 		results = subprocess.run(
 			["openssl", "aes-256-cbc", "-d", "-a", "-iter", "10000",
@@ -35,7 +35,10 @@ def prompt2():
 	That makes it easier to check against the 
 	PSWD variable later
 	"""
-	return int(input("enter password: ").strip())
+	try:
+		return int(input("enter password: ").strip())
+	except ValueError:
+		return None
 
 def prompt1():
 	"""
@@ -68,9 +71,15 @@ def auth():
 	the typed in username and password match what is 
 	stored in the variables
 	"""
+
+	key = os.environ.get("PW_KEY")
+	if not key:
+		key = getpass.getpass("Enter Decryption key: ")
+	env = os.environ.copy()
+	env["PW_KEY"] = key
 	uguess = prompt1()
 	upswd = prompt2()
-	PSWD = readPsw()
+	PSWD = readPsw(env)
 	print(uguess, "vs", UNAME, "...", uguess == UNAME)
 	print(upswd, "vs", PSWD, "...", upswd == PSWD)
 
