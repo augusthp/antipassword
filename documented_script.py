@@ -72,9 +72,9 @@ def auth():
 	upswd = prompt2()
 	PSWD = readPsw()
 	print(uguess, "vs", UNAME, "...", uguess == UNAME)
-	print(upswd, "vs", readPsw(), "...", upswd == readPsw())
+	print(upswd, "vs", PSWD, "...", upswd == PSWD)
 
-	if uguess == UNAME and upswd == readPsw():
+	if uguess == UNAME and upswd == PSWD:
 		access()
 		logged_in = True
 	else:
