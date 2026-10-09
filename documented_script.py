@@ -2,6 +2,7 @@ import time
 import subprocess
 import getpass
 import os
+import steganographer
 
 # my fake username and password
 UNAME = "asdf"
@@ -79,7 +80,8 @@ def auth():
 	#after that you need it each time the program runs.
 	key = os.environ.get("PW_KEY")
 	if not key:
-		key = getpass.getpass("Enter Decryption key: ")
+		while not key:
+			key = steganographer.retrieve_data()
 	env = os.environ.copy()
 	env["PW_KEY"] = key
 	uguess = prompt1()
