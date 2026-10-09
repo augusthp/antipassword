@@ -11,8 +11,8 @@ def readPsw(env):
 	#the env variable it takes in stores the key. with the wrong key you can't open
 	#the file
 	"""readPWS decrypts the openssl file so it can be read and compared
-	to the user entered password. This subprocess.run just runs these commands
-	which I think is why this doesn't work on windows"""
+	to the user entered password. This subprocess runs these commands. Make sure Openssl
+	is installed on windows and in your file """
 	try:
 		results = subprocess.run(
 			["openssl", "aes-256-cbc", "-d", "-a", "-iter", "10000",
