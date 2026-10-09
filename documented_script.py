@@ -1,6 +1,3 @@
-#this file oringially made By Molly Domino
-#modifed by August Halm-perazone to use the 
-#subprocess command to decrypt openssl files
 import time
 import subprocess
 import getpass
@@ -15,8 +12,8 @@ def readPsw(env):
 	#the env variable it takes in stores the key. with the wrong key you can't open
 	#the file
 	"""readPWS decrypts the openssl file so it can be read and compared
-	to the user entered password. This subprocess runs these commands. Make sure Openssl
-	is installed on windows and in your file """
+	to the user entered password. This subprocess.run just runs these commands
+	which I think is why this doesn't work on windows"""
 	try:
 		results = subprocess.run(
 			["openssl", "aes-256-cbc", "-d", "-a", "-iter", "10000",
@@ -84,16 +81,13 @@ def auth():
 	key = os.environ.get("PW_KEY")
 	if not key:
 		while not key:
-			key = steganographer.retrieve_data()
+			key = steganographer.retrieve_data() # retrieves the key for the chosen campus
 	env = os.environ.copy()
 	env["PW_KEY"] = key
 	uguess = prompt1()
 	upswd = prompt2()
-	PSWD = readPsw(env)
-	print(uguess, "vs", UNAME, "...", uguess == UNAME)
-	print(upswd, "vs", PSWD, "...", upswd == PSWD)
 
-	if uguess == UNAME and upswd == PSWD:
+	if uguess == UNAME and upswd == readPsw(env):
 		access()
 		logged_in = True
 	else:
