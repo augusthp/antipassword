@@ -8,7 +8,7 @@ import steganographer
 UNAME = "asdf"
 
 
-def readPsw(env, upswd):
+def readPsw(env, filename):
 	#the env variable it takes in stores the key. with the wrong key you can't open
 	#the file
 	"""readPWS decrypts the openssl file so it can be read and compared
@@ -16,15 +16,14 @@ def readPsw(env, upswd):
 	which I think is why this doesn't work on windows"""
 	try:
 		results = subprocess.run(
-			["openssl", "aes-256-cbc", "-a", "-e", "-iter", "10000",
-			str(upswd), "-pass", "env:PW_KEY" ],
+			["openssl", "aes-256-cbc", "-d", "-a", "-iter", "10000", "-pass", "env:PW_INPUT", "-pass", "env:PW_KEY"],
 			capture_output=True, text=True, check=True, env=env
 		)
 	#if this fails it should return an error message instead of just crashing
 	except subprocess.CalledProcessError as e:
 		print("openssl error:", e.stderr)
 		exit(1)
-	return int(results.stdout.strip())
+	return (results.stdout.strip())
 
 def readfile(filename):
 	f = open(filename)
@@ -82,19 +81,32 @@ def auth():
 	#if none is set then it asks the user for the key
 	#You need to set the decrpytion key when you use openssl
 	#after that you need it each time the program runs.
-	filename = input("type your file name here: ")
+	'''filename = input("type your file name here: ")
+	'''
 	key = os.environ.get("PW_KEY")
+	'''
 	if not key:
 		while not key:
 			key = steganographer.retrieve_data() # retrieves the key for the chosen campus
+	'''
 	env = os.environ.copy()
+	'''
 	env["PW_KEY"] = key
 	uguess = prompt1()
 	upswd = prompt2()
 	fileOut = readfile(filename)
 	print(fileOut)
-
-	if uguess == UNAME and upswd == readPsw(env, upswd):
+	'''
+	uguess = 'asdf'
+	fileOut = 'U2FsdGVkX19vSif1L5mr0sphoMMPiaSpvYT/cx1w0HNp3kC8AYBDBNAbCDma676l'
+	env["PW_KEY"] = "041012020"
+	filename = "14151820851192051814"
+	env["PW_INPUT"] = filename
+	if not os.path.isfile(filename):
+		print(f"File not found: {filename}")
+		exit(1)
+	print(repr(filename), os.path.isfile(filename), os.getcwd)
+	if uguess == UNAME and fileOut == readPsw(env, filename):
 		access()
 		logged_in = True
 	else:
