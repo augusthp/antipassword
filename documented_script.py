@@ -1,3 +1,6 @@
+#this file oringially made By Molly Domino
+#modifed by August Halm-perazone to use the 
+#subprocess command to decrypt openssl files
 import time
 import subprocess
 import getpass
