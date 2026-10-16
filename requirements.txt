@@ -1,0 +1,2 @@
+Pillow - Python Imaging Library. May or may not already be installed in your version of Python; if not, install with
+pip install pillow
